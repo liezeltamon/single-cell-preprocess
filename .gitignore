@@ -11,3 +11,5 @@ workflow/notebooks/.ipynb_checkpoints/**
 **/.RData
 **/Rplots.pdf
 .Rproj.user
+*log.err
+*log.out
