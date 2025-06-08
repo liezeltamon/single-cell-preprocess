@@ -139,10 +139,14 @@ ggplot(plot_df, aes(-log10(FDR))) +
 # Save outputs
 
 # Whitelist of non-empty barcodes
-writeLines(rownames(emptydrops_out)[which(emptydrops_out$FDR < emptydrops_alpha)],
-           file.path(out_dir, "whitelist.txt"))
-writeLines(rownames(df)[setdiff(1:nrow(df), which(emptydrops_out$FDR < emptydrops_alpha))],
-           file.path(out_dir, "blacklist.txt"))
+whitelist_inds <- which(emptydrops_out$FDR < emptydrops_alpha)
+writeLines(
+  rownames(emptydrops_out)[whitelist_inds], file.path(out_dir, "whitelist.txt")
+)
+writeLines(
+  rownames(emptydrops_out)[setdiff(1:nrow(emptydrops_out), whitelist_inds)],
+  file.path(out_dir, "blacklist.txt")
+)
 # Ambient profile here can be used for measuring ambient contamination with DecontX
 emptydrops_out$Barcode <- rownames(emptydrops_out)
 qsave(emptydrops_out, file.path(out_dir, "output.qs"))

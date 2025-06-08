@@ -1,10 +1,10 @@
 import os
-# sbatch -p long --mem=50G --cpus-per-task=3 --output=log.out --error=log.err --wrap="snakemake -s rules/empty.smk --configfile envs/config.yml --cores 2 -j 2" &
+# sbatch -p long --mem=30G --cpus-per-task=2 --output=log.out --error=log.err --wrap="snakemake -s rules/empty.smk --configfile envs/config.yml --cores 2 -j 2" &
 
 # Parameters
 
 PROJECT_DIR = os.path.abspath("../../../..")
-DATA_DIR = os.path.join(PROJECT_DIR, "data", "cellranger")
+DATA_DIR = os.path.join(PROJECT_DIR, "data", "cellranger_dir")
 RESULTS_DIR = os.path.join(PROJECT_DIR, "results", "process_droplets_pipeline")
 
 configfile: os.path.join("envs", "config.yml")
