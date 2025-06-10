@@ -4,6 +4,7 @@ setwd(rprojroot::find_rstudio_root_file())
 renv::load()
 suppressPackageStartupMessages({
   source(file.path("utils", "env.R"))
+  source(file.path("utils", "sc_helpers.R"))
   library(argparse)
   library(assertthat)
   library(tidyverse)
@@ -36,19 +37,7 @@ pdf(file.path(out_dir, "plots.pdf"), height = 9, width = 16)
 par(mfrow = c(1,1))
 
 # Convert read counts data to SingleCellExperiment
-
-if (!dir.exists(counts_dir)) {
-  counts_dir = paste0(counts_dir, ".h5")
-  # To bypass problem that DropletUtils::read10xCounts() loads matrix as DelayedMatrix instead of dgCMatrix
-  x <- Seurat::Read10X_h5(counts_dir, use.names = FALSE, unique.features = FALSE)
-  x <- do.call("rbind", x)
-  sce <- DropletUtils::read10xCounts(c(raw = counts_dir), col.names = TRUE)
-  if (identical(dimnames(x), dimnames(counts(sce)))) {
-    counts(sce) <- x
-  }
-} else {
-  sce <- DropletUtils::read10xCounts(c(raw = counts_dir), col.names = TRUE)
-}
+sce <- read_sc_data(counts_dir)
 is_hto <- grepl("HTO", rowData(sce)$ID, ignore.case = FALSE)
 is_antibody_capture <- grepl("Antibody Capture", rowData(sce)$Type)
 rowData(sce)$Type[is_hto & is_antibody_capture] <- "Multiplexing Capture"
