@@ -19,7 +19,7 @@ suppressPackageStartupMessages({
 
 parser <- ArgumentParser(description = "Identify empty drops with EmptyDrops")
 parser$add_argument("--counts_dir", type = "character", required = TRUE,
-                    help = "10x outs directory")
+                    help = "10x counts directory")
 parser$add_argument("--seed_val", type = "integer", default = 827,
                     help = "Seed value")
 parser$add_argument("--n_cores", type = "integer", default = 1,
@@ -30,6 +30,7 @@ parser$add_argument("--out_dir", type = "character", required = TRUE,
                     help = "Output directory")
 args <- parser$parse_args()
 for (i in seq_along(args)) {assign(names(args)[i], args[[i]])}
+out_dir <- create_dir(out_dir)
 
 #----- MAIN -----
 
