@@ -27,6 +27,8 @@ parser$add_argument("--out_dir", type = "character", required = TRUE,
                     help = "Output directory")
 parser$add_argument("--whitelist_path", type = "character", required = TRUE,
                     help = "Path to cell barcode whitelist")
+parser$add_argument("--htotosampletsv_path", type = "character", required = TRUE,
+                    help = "Path to HTO to sample mapping TSV file")
 parser$add_argument("--chemistry_10x", type = "character", default = "10xV3",
                     help = "10x chemistry type (default: 10xV3)")
 parser$add_argument("--methods", type = "character", nargs = "+",
@@ -34,8 +36,7 @@ parser$add_argument("--methods", type = "character", nargs = "+",
                     # demuxmix - very slow
                     default = c("htodemux", "multiseq", "dropletutils", "gmm_demux", "bff_raw", "bff_cluster"),
                     help = "Methods to use for dehashing, see ?cellhashR::GenerateCellHashingCalls for options")
-parser$add_argument("--htotosampletsv_path", type = "character", required = TRUE,
-                    help = "Path to HTO to sample mapping TSV file")
+
 args <- parser$parse_args()
 for (i in seq_along(args)) {assign(names(args)[i], args[[i]])}
 out_dir <- create_dir(out_dir)

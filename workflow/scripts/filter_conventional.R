@@ -123,4 +123,9 @@ write.csv(outlier_df, file.path(out_dir, "barcode_metadata.csv"), row.names = FA
 
 dev.off()
 
+# Session info
+
+sessioninfo::session_info(to_file = file.path(out_dir, "session_info.txt"))
+sessioninfo::session_info()
+
 # rm(list = ls()); gc()

@@ -28,10 +28,10 @@ parser$add_argument("--parent_counts_dir", type = "character", required = TRUE, 
 parser$add_argument("--group_id_dir", type = "character", required = TRUE, help = "Path to directory with metadata CSV")
 parser$add_argument("--group_id_var", type = "character", default = "hashing_var", help = "Variable name for group ID in cell metadata (default: hashing_var)")
 parser$add_argument("--whitelist_dir", type = "character", required = TRUE, help = "Path to directory with barcode whitelist files")
-parser$add_argument("--out_dir", type = "character", required = TRUE, help = "Output directory")
+parser$add_argument("--parent_out_dir", type = "character", required = TRUE, help = "Output directory")
 args <- parser$parse_args()
 for (i in seq_along(args)) {assign(names(args)[i], args[[i]])}
-out_dir <- create_dir(out_dir)
+parent_out_dir <- create_dir(parent_out_dir)
 
 # ----- MAIN -----
 
@@ -70,7 +70,7 @@ qc_agg_df_lst <- lapply(seq_run_ids, function(seq_run_id) {
                     feature_names = feature_names_uniqified,
                     use.altexps = TRUE)
   
-  out_run_dir = create_dir(file.path(out_dir, seq_run_id))
+  out_run_dir = create_dir(file.path(parent_out_dir, seq_run_id))
   pdf(file.path(out_run_dir, "plots.pdf"), height = 9, width = 50)
   
   plot_basicQC(colData(sce),
@@ -80,9 +80,9 @@ qc_agg_df_lst <- lapply(seq_run_ids, function(seq_run_id) {
   
   dev.off()
   
-  write.csv(as.data.frame(colData(sce)), 
-            file.path(create_dir(file.path(out_dir, seq_run_id)), "metrics.csv"),
-            row.names = FALSE)
+  write.csv(
+    as.data.frame(colData(sce)), file.path(out_run_dir, "metrics.csv"), row.names = FALSE
+  )
   
   qc_agg_df <- colData(sce) %>%
     as.data.frame() %>%
@@ -105,7 +105,7 @@ qc_agg_df_lst <- lapply(seq_run_ids, function(seq_run_id) {
 })
 
 qc_agg_df <- do.call("rbind", qc_agg_df_lst)
-out_dir <- create_dir(file.path(out_dir, "aggregate"))
+out_dir <- create_dir(file.path(parent_out_dir, "aggregate"))
 write.csv(qc_agg_df, file.path(out_dir, "metrics.csv"))
 
 # **(Optional) Exclude some columns from the heatmap**

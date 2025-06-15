@@ -2,3 +2,25 @@ empty_emptydrops:
   seed_val: 827
   n_cores: 1
   emptydrops_alpha: 0.0001
+
+dehash_cellhashr:
+  chemistry_10x: 10xV3
+  methods:
+    - htodemux
+    - multiseq
+    - dropletutils
+    - gmm_demux
+    - bff_raw
+    - bff_cluster
+
+doublet_scdblfinder:
+  seed_val: 827
+  n_cores: 1
+
+filter_conventional:
+  sample_id_var: hashing_var
+  is_outlier_nmads: 3
+  is_outlier_fields_id: default
+
+qc_sc:
+  group_id_var: hashing_var

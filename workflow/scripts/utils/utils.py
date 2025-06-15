@@ -5,6 +5,8 @@ def params_to_cli_args(param_dict):
         if isinstance(v, bool):
             if v:
                 args.append(flag)
+        elif isinstance(v, list):
+            args.append(f"{flag} " + " ".join(map(str, v)))
         else:
             args.append(f"{flag} {v}")
     return " ".join(args)

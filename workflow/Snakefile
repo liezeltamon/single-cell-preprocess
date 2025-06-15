@@ -8,10 +8,14 @@ import shutil
 sys.path.append("scripts/utils")
 from utils import params_to_cli_args
 
+# %%
+import os
+
 # %% Parameters
 
 PROJECT_DIR = os.path.abspath("../../../..")
 DATA_DIR = os.path.join(PROJECT_DIR, "data", "cellranger_dir")
+HTOMAPPING_DIR = os.path.join(PROJECT_DIR, "results", "process_droplets", "hto_to_sample_mapping")
 CONFIG_FILENAME = "config"
 
 CONFIG_PATH = os.path.join("../config", f"{CONFIG_FILENAME}.yml")
@@ -30,7 +34,11 @@ configfile: CONFIG_PATH
 
 # Load rules
 
-include: "rules/empty_emptydrops"
+include: "rules/empty_emptydrops.smk"
+include: "rules/dehash_cellhashr.smk"
+include: "rules/doublet_scdblfinder.smk"
+include: "rules/filter_conventional.smk"
+include: "rules/qc_sc.smk"
 
 # Optional messages, log and error handling
 
@@ -47,17 +55,63 @@ onerror:
 
 
 # Target rules
-
 rule all:
     input:
+        # Outputs from empty_emptydrops
         expand(
             os.path.join(RESULTS_DIR, "empty", "{sample}", "{filename}"),
             sample=SAMPLES,
             filename=[
                 "blacklist.txt",
-                "whitelist.txt",
                 "output.qs",
                 "plots.pdf",
-                "session_info.txt"
+                "session_info.txt",
+                "whitelist.txt"
             ]
-        )
+        ),
+        # Outputs from dehash_cellhashr
+        expand(
+            os.path.join(RESULTS_DIR, "dehash", "{sample}", "{filename}"),
+            sample=SAMPLES,
+            filename=[
+                "barcode_metadata.csv",
+                "metrics.csv",
+                "output.csv",
+                "session_info.txt",
+                "whitelist.txt"
+            ]
+        ),
+        # Outputs from doublet_scdblfinder
+        expand(
+            os.path.join(RESULTS_DIR, "doublet", "{sample}", "{filename}"),
+            sample=SAMPLES,
+            filename=[
+                "barcode_metadata.csv",
+                "output.qs",
+                "plots.pdf",
+                "session_info.txt",
+                "whitelist.txt"
+            ]
+        ),
+        # Outputs from filter_conventional
+        expand(
+            os.path.join(RESULTS_DIR, "filter", "{sample}", "{filename}"),
+            sample=SAMPLES,
+            filename=[
+                "barcode_metadata.csv",
+                "plots.pdf",
+                "session_info.txt",
+                "whitelist.txt"
+            ]
+        ),
+        # Outputs from qc_sc
+        expand(
+            os.path.join(RESULTS_DIR, "qc_sc", "{sample}", "{filename}"),
+            sample=SAMPLES,
+            filename=[
+                "metrics.csv",
+                "plots.pdf"
+            ]
+        ),
+        os.path.join(RESULTS_DIR, "qc_sc", "aggregate", "heatmaps.pdf"),
+        os.path.join(RESULTS_DIR, "qc_sc", "aggregate", "metrics.csv")

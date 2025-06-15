@@ -26,7 +26,7 @@ parser$add_argument("--whitelist_path", type = "character", required = TRUE,
                     help = "Path to empty droplet barcode whitelist")
 parser$add_argument("--seed_val", type = "integer", default = 827,
                     help = "Random seed value (default: 827)")
-parser$add_argument("--n_cpu", type = "integer", default = 1,
+parser$add_argument("--n_cores", type = "integer", default = 1,
                     help = "Number of CPU cores to use (default: 1)")
 parser$add_argument("--doublet_expected_rate", type = "numeric", default = NULL,
                     help = "Expected doublet rate (default: NULL, 1% per 1000 cells by default in scDblFinder)")
@@ -39,7 +39,7 @@ out_dir <- create_dir(out_dir)
 #seq_run_id = "sle_batch2_pool2"
 #counts_dir = file.path("data", "cellranger", seq_run_id, "raw_feature_bc_matrix")
 #seed_val = 827
-#n_cpu = 2
+#n_cores = 2
 ## 0.8% for every 1,000 cells (For the standard 3' v3.1 assay, may be different depending on kit)
 ## https://kb.10xgenomics.com/hc/en-us/articles/360054599512-What-is-the-cell-multiplet-rate-when-using-the-3-CellPlex-Kit-for-Cell-Multiplexing
 #doublet_expected_rate = NULL # 1% per 1000 cells by default in scDblFinder()
@@ -112,7 +112,7 @@ message("doublet_expected_rate: ", doublet_expected_rate)
 set.seed(seed_val)
 scdblfinder_sce <- scDblFinder(counts(sce_nonzero_notempty), 
                                dbr = doublet_expected_rate,
-                               BPPARAM = MulticoreParam(n_cpu, RNGseed = seed_val))
+                               BPPARAM = MulticoreParam(n_cores, RNGseed = seed_val))
 scdblfinder_out_df <- colData(scdblfinder_sce) %>% 
   as.data.frame() %>% 
   rownames_to_column("Barcode")
