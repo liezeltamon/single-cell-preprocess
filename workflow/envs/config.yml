@@ -1,4 +1,0 @@
-empty_emptydrops:
-  seed_val: 827
-  n_cores: 2
-  emptydrops_alpha: 0.001
