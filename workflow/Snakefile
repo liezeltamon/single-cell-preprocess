@@ -30,7 +30,7 @@ configfile: CONFIG_PATH
 
 # Load rules
 
-include: "rules/empty.smk"
+include: "rules/empty_emptydrops"
 
 # Optional messages, log and error handling
 
