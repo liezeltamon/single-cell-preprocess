@@ -13,3 +13,5 @@ workflow/notebooks/.ipynb_checkpoints/**
 .Rproj.user
 *log.err
 *log.out
+
+*dump
