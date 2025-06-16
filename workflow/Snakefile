@@ -38,7 +38,8 @@ include: "rules/empty_emptydrops.smk"
 include: "rules/dehash_cellhashr.smk"
 include: "rules/doublet_scdblfinder.smk"
 include: "rules/filter_conventional.smk"
-include: "rules/qc_sc.smk"
+include: "rules/qc_sc_sample.smk"
+include: "rules/qc_sc_aggregate.smk"
 
 # Optional messages, log and error handling
 
@@ -104,14 +105,15 @@ rule all:
                 "whitelist.txt"
             ]
         ),
-        # Outputs from qc_sc
+        # Outputs from qc_sc_sample
         expand(
-            os.path.join(RESULTS_DIR, "qc_sc", "{sample}", "{filename}"),
+            os.path.join(RESULTS_DIR, "qc_sc_sample", "{sample}", "{filename}"),
             sample=SAMPLES,
             filename=[
                 "metrics.csv",
                 "plots.pdf"
             ]
         ),
-        os.path.join(RESULTS_DIR, "qc_sc", "aggregate", "heatmaps.pdf"),
-        os.path.join(RESULTS_DIR, "qc_sc", "aggregate", "metrics.csv")
+        # Outputs from qc_sc_aggregate
+        os.path.join(RESULTS_DIR, "qc_sc_aggregate", "heatmaps.pdf"),
+        os.path.join(RESULTS_DIR, "qc_sc_aggregate", "metrics.csv")

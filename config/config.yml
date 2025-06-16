@@ -22,5 +22,12 @@ filter_conventional:
   is_outlier_nmads: 3
   is_outlier_fields_id: default
 
-qc_sc:
+qc_sc_sample:
   group_id_var: hashing_var
+
+qc_sc_aggregate:
+  heatmap_colors:
+    - blue
+    - white
+    - red
+  heatmap_fontsize: 10
