@@ -7,6 +7,7 @@ rule dehash_cellhashr:
         barcode_metadata = os.path.join(RESULTS_DIR, "dehash", "{sample}", "barcode_metadata.csv"),
         metrics = os.path.join(RESULTS_DIR, "dehash", "{sample}", "metrics.csv"),
         output = os.path.join(RESULTS_DIR, "dehash", "{sample}", "output.csv"),
+        plot = os.path.join(RESULTS_DIR, "dehash", "{sample}", "plots.pdf"),
         session = os.path.join(RESULTS_DIR, "dehash", "{sample}", "session_info.txt"),
         whitelist = os.path.join(RESULTS_DIR, "dehash", "{sample}", "whitelist.txt")
     params:

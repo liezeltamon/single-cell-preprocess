@@ -78,6 +78,7 @@ rule all:
                 "barcode_metadata.csv",
                 "metrics.csv",
                 "output.csv",
+                "plots.pdf",
                 "session_info.txt",
                 "whitelist.txt"
             ]

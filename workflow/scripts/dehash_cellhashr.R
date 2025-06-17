@@ -60,7 +60,7 @@ hto_names <- rowData(sce)$ID[is_hto]
 # Split experiments
 sce <- SingleCellExperiment::splitAltExps(sce, rowData(sce)$Type)
 
-pdf("plots.pdf", width = 16, height = 9)
+pdf(file.path(out_dir, "plots.pdf"), width = 16, height = 9)
 
 # QC
 

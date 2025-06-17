@@ -32,6 +32,12 @@ for (i in seq_along(args)) {assign(names(args)[i], args[[i]])}
 out_dir <- create_dir(out_dir)
 heatmap_breaks = as.numeric(strsplit(heatmap_breaks, split = ",")[[1]])
 
+# src_dir = "results/process_droplets_pipeline/config/qc_sc_sample"
+# out_dir = "."
+# heatmap_breaks = "-3,3,0.5"
+# heatmap_colors = c("blue", "white", "red")
+# heatmap_fontsize = 10
+
 # ----- MAIN -----
 
 seq_run_ids <- list.files(src_dir, full.names = FALSE, recursive = FALSE)
@@ -44,11 +50,11 @@ write.csv(qc_agg_df, file.path(out_dir, "metrics.csv"))
 
 # **(Optional) Exclude some columns from the heatmap**
 qc_agg_df = qc_agg_df[
-     , grepl("-median|barcode_count|seq_run_id|group_id", colnames(qc_agg_df))
+     , grepl(".median|barcode_count|seq_run_id|group_id", colnames(qc_agg_df))
 ]
 
-breaks <- seq(args$breaks[1], args$breaks[2], by = args$breaks[3])
-custom_colors <- colorRampPalette(heatmap_colors)(length(breaks))
+heatmap_breaks <- seq(heatmap_breaks[1], heatmap_breaks[2], by = heatmap_breaks[3])
+heatmap_colors <- colorRampPalette(heatmap_colors)(length(heatmap_breaks))
 pdf(file.path(out_dir, "heatmaps.pdf"), height = 4, width = 10)
 
 for (group_id_lvl in unique(qc_agg_df$group_id)) {
@@ -66,14 +72,14 @@ for (group_id_lvl in unique(qc_agg_df$group_id)) {
   allfinite_colnames <- colnames(data_mx)
   mads_mx[!is.finite(mads_mx)] <- NA
   
-  # Generate the heatmap using pheatmap with custom colors and breaks
+  # Plot
   display_numbers_mx <- data_mx[ ,allfinite_colnames]
   display_numbers_mx <- round(display_numbers_mx, digits = 2)
   mx <- mads_mx[ , allfinite_colnames]
   print(
     pheatmap(mx, 
-             color = custom_colors, 
-             breaks = breaks,
+             color = heatmap_colors,
+             breaks = heatmap_breaks,
              cluster_cols = FALSE,
              cluster_rows = FALSE,
              display_numbers = display_numbers_mx,
