@@ -1,6 +1,6 @@
 rule dehash_cellhashr:
     input:
-        counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, "raw_feature_bc_matrix"),
+        counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, DATA_DIR_SUFFIX),
         whitelist_path = lambda wc: os.path.join(RESULTS_DIR, "empty", wc.sample, "whitelist.txt"),
         htotosampletsv_path = lambda wc: os.path.join(HTOMAPPING_DIR, wc.sample, "hto_to_sample_mapping.tsv")
     output:

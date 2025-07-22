@@ -1,6 +1,6 @@
 rule doublet_scdblfinder:
     input:
-        counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, "raw_feature_bc_matrix"),
+        counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, DATA_DIR_SUFFIX),
         whitelist_path = lambda wc: os.path.join(RESULTS_DIR, "empty", wc.sample, "whitelist.txt"),
         dehash_path = lambda wc: os.path.join(RESULTS_DIR, "dehash", wc.sample, "barcode_metadata.csv")
     output:

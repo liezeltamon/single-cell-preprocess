@@ -1,6 +1,6 @@
 rule filter_conventional:
     input:
-        counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, "raw_feature_bc_matrix"),
+        counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, DATA_DIR_SUFFIX),
         sample_id_src_path = lambda wc: os.path.join(RESULTS_DIR, "dehash", wc.sample, "barcode_metadata.csv"),
         whitelists = lambda wc: [
             os.path.join(RESULTS_DIR, "dehash", wc.sample, "whitelist.txt"),
