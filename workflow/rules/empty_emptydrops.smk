@@ -1,7 +1,6 @@
 rule empty_emptydrops:
     input:
         counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, DATA_DIR_SUFFIX)
-        #counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, "raw_feature_bc_matrix")
     output:
         blacklist = os.path.join(RESULTS_DIR, "empty", "{sample}", "blacklist.txt"),
         output = os.path.join(RESULTS_DIR, "empty", "{sample}", "output.qs"),

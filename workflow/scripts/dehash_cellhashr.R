@@ -71,7 +71,7 @@ whitelist_stripped <- unlist(lapply(
 ))
 # Run to get QC plots
 barcode_data <- cellhashR::ProcessCountMatrix(
-  rawCountData = counts_dir,
+  rawCountData = gsub("\\.h5$", "", counts_dir),
   # Because cell barcode whitelist is given containing called non-empty droplets by DropletUtils::emptyDrops()
   minCountPerCell = 0,
   barcodeWhitelist = hto_names,
@@ -97,7 +97,7 @@ df <- GenerateCellHashingCalls(
   metricsFile = file.path(out_dir, paste0("metrics.csv")),
   doTSNE = FALSE,
   chemistry = chemistry_10x,
-  rawFeatureMatrixH5 = paste0(counts_dir, ".h5")
+  rawFeatureMatrixH5 = paste0(gsub("\\.h5$", "", counts_dir), ".h5")
 )
 write.csv(
   df, file = file.path(out_dir, "output.csv"), row.names = FALSE, quote = FALSE

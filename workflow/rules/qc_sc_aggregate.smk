@@ -1,6 +1,6 @@
 rule qc_sc_aggregate:
     input:
-        src_dir = os.path.join(RESULTS_DIR, "qc_sc_sample")
+        src_dir = directory(os.path.join(RESULTS_DIR, "qc_sc_sample"))
     output:
         heatmaps = os.path.join(RESULTS_DIR, "qc_sc_aggregate", "heatmaps.pdf"),
         metrics = os.path.join(RESULTS_DIR, "qc_sc_aggregate", "metrics.csv")
