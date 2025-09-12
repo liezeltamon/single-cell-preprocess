@@ -1,5 +1,5 @@
 # mamba activate snakemake; module load R/4.3.2-gfbf-2023a
-# sbatch -J proc_agg -p short,long --mem=50G --cpus-per-task=2 --output=%x.log.out --error=%x.log.err --wrap="snakemake -s Snakefile --cores 2 -j 2"
+# sbatch -J proc_agg -p short,long --mem=80G --cpus-per-task=4 --output=%x.log.out --error=%x.log.err --wrap="snakemake -s Snakefile --cores 4 --forceall"
 # ../../../../results/process_droplets_pipeline/config
 
 # %%
@@ -22,7 +22,7 @@ HTOMAPPING_DIR = os.path.join(PROJECT_DIR, "results", "process_droplets", "hto_t
 CONFIG_FILENAME = "config"
 
 CONFIG_PATH = os.path.join("../config", f"{CONFIG_FILENAME}.yml")
-RESULTS_DIR = os.path.join(PROJECT_DIR, "results", "process_droplets_pipeline1", CONFIG_FILENAME)
+RESULTS_DIR = os.path.join(PROJECT_DIR, "results", "process_droplets_pipeline3", CONFIG_FILENAME)
 SAMPLES = [d for d in os.listdir(DATA_DIR) if os.path.isdir(os.path.join(DATA_DIR, d))]
 
 # %% ----- MAIN -----
