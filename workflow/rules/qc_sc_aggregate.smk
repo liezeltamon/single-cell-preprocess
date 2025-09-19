@@ -21,7 +21,7 @@ rule qc_sc_aggregate:
         """
         mkdir -p {params.out_dir} && \
         Rscript scripts/{rule}.R \
-            --src_dir {input.src_dir} \
+            --src_dir {params.src_dir} \
             --out_dir {params.out_dir} \
             {params.main} &> {log}
         """
