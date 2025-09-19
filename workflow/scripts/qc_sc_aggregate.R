@@ -49,7 +49,7 @@ qc_agg_df_lst <- lapply(seq_run_ids, function(seq_run_id) {
 })
 
 qc_agg_df <- do.call("rbind", qc_agg_df_lst)
-write.csv(qc_agg_df, file.path(out_dir, "metrics.csv"))
+write.csv(qc_agg_df, file.path(out_dir, "metrics.csv"), row.names = FALSE, quote = FALSE)
 
 # **(Optional) Exclude some columns from the heatmap**
 qc_agg_df = qc_agg_df[
