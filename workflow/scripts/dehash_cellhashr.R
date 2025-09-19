@@ -107,19 +107,27 @@ dev.off()
 
 # Generate barcode_metadata.csv and whitelist.txt outputs
 
-htotosampletsv_df <- read.table(
-  htotosampletsv_path, col.names = c("hashing_var", "hto_id"), row.names = "hto_id"
-)
+# To allow other columns to be in "barcode_metadata.csv" for later grouping of heatmaps in qc_sc_aggregate
+# Column 1 and 2 required to be in that order
+htotosampletsv_df <- read.table(htotosampletsv_path, header = TRUE, sep = "\t")
+colnames(htotosampletsv_df)[1:2] <- c("hashing_var", "hto_id")
+htotosampletsv_df <- htotosampletsv_df %>% column_to_rownames("hto_id")
 
 df <- df %>%
   rename(
     Barcode = cellbarcode,
     assignment = consensuscall
   )
+# df$assignment contains other categories like "Discordant", "Negative"
+assert_that(
+  all(
+    sort(unique(rownames(htotosampletsv_df))) %in% df$assignment
+  )
+)
 df <- df %>%
   select(Barcode, assignment) %>%
+  bind_cols(htotosampletsv_df[df$assignment, ]) %>%
   mutate(
-    hashing_var = htotosampletsv_df[df$assignment, "hashing_var"],
     score = NA,
     is_multiplet = !(df$assignment %in% hto_names),
     # To add column, consider all singlets as confident calls
