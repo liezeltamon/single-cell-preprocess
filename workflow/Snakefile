@@ -1,5 +1,5 @@
 # mamba activate snakemake; module load R/4.3.2-gfbf-2023a
-# sbatch -J process_droplets_pipeline -p short,long --mem=30G --cpus-per-task=1 --output=%x.log.out --error=%x.log.err --wrap="snakemake -s Snakefile --cores 1 --forceall --rerun-incomplete"
+# sbatch -J process_droplets_pipeline -p short,long --mem=30G --cpus-per-task=1 --output=%x.log.out --error=%x.log.err --wrap="snakemake -s Snakefile --cores 1"
 # sbatch -J process_droplets_pipeline -p short,long --mem=80G --cpus-per-task=4 --output=%x.log.out --error=%x.log.err --wrap="snakemake -s Snakefile --cores 4 --forceall --rerun-incomplete"
 # ../../../../results/process_droplets_pipeline/config
 
