@@ -52,10 +52,10 @@ snakemake --cores 2 --sdm conda apptainer --directory .test
 
 ## Authors
 
-- Firstname Lastname
-  - Affiliation
-  - ORCID profile
-  - home page
+- Liezel Tamon
+  - University of Oxford
+  - [ORCID profile](https://orcid.org/0000-0003-3705-6019)
+  - https://www.imm.ox.ac.uk/people/liezel-tamon
 
 ## References
 
