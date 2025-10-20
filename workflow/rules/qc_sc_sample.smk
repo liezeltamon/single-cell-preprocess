@@ -1,7 +1,7 @@
 rule qc_sc_sample:
     input:
         counts_dir = lambda wc: os.path.join(DATA_DIR, wc.sample, DATA_DIR_SUFFIX),
-        group_id_src_path = lambda wc: os.path.join(RESULTS_DIR, "dehash", wc.sample, "barcode_metadata.csv"),
+        grouping_var_src_path = lambda wc: os.path.join(RESULTS_DIR, "dehash", wc.sample, "barcode_metadata.csv"),
         whitelist_path = lambda wc: os.path.join(RESULTS_DIR, "filter", wc.sample, "whitelist.txt")
     output:
         metrics = os.path.join(RESULTS_DIR, "qc_sc_sample", "{sample}", "metrics.csv"),
@@ -16,7 +16,7 @@ rule qc_sc_sample:
         mkdir -p {params.out_dir} && \
         Rscript scripts/{rule}.R \
             --counts_dir {input.counts_dir} \
-            --group_id_src_path {input.group_id_src_path} \
+            --grouping_var_src_path {input.grouping_var_src_path} \
             --whitelist_path {input.whitelist_path} \
             --out_dir {params.out_dir} \
             {params.main} &> {log}

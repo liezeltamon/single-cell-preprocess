@@ -23,9 +23,10 @@ filter_conventional:
   is_outlier_fields_id: default
 
 qc_sc_sample:
-  group_id_var: hashing_var
+  grouping_var: hashing_var
 
 qc_sc_aggregate:
+  grouping_var: group_id
   heatmap_colors:
     - blue
     - white

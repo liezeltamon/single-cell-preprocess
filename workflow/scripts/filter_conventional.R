@@ -8,6 +8,7 @@ suppressPackageStartupMessages({
   source(file.path("utils", "sc_helpers.R"))
   source(file.path("utils", "wrapper.R"))
   library(argparse)
+  library(assertthat)
   library(tidyverse)
   library(qs)
   library(scuttle)
@@ -103,12 +104,14 @@ plot_basicQC(colData(sce),
              metrics = names(which(unlist(lapply(colData(sce), function(x) is.numeric(x))))), 
              transform_log10 = TRUE)
 
-# Get outliers
+# Get outliers per sample
 
-outlier_mx <- get_outliers(x = colData(sce), 
-                           sample_ids = sce$sample_id,
-                           is_outlier_fields = is_outlier_fields,
-                           is_outlier_nmads = is_outlier_nmads)
+outlier_mx <- get_outliers(
+  x = colData(sce), 
+  sample_ids = sce$sample_id,
+  is_outlier_fields = is_outlier_fields,
+  is_outlier_nmads = is_outlier_nmads
+)
 barcodes <- rownames(outlier_mx)
 outlier_mx <- apply(outlier_mx, MARGIN = 2, as.numeric)
 rownames(outlier_mx) <- barcodes
@@ -116,10 +119,18 @@ rownames(outlier_mx) <- barcodes
 
 # Save output
 
-writeLines(rownames(outlier_mx)[!outlier_mx[ ,"outlier"]], file.path(out_dir, "whitelist.txt"))
+writeLines(
+  rownames(outlier_mx)[!outlier_mx[ ,"outlier"]], file.path(out_dir, "whitelist.txt")
+)
 outlier_df <- outlier_mx %>% as.data.frame() %>% 
   rownames_to_column(var = "Barcode")
-write.csv(outlier_df, file.path(out_dir, "barcode_metadata.csv"), row.names = FALSE, quote = FALSE)
+
+metadata_df <- as.data.frame(colData(sce)) %>% 
+  full_join(outlier_df, by = "Barcode")
+assert_that(nrow(metadata_df) == ncol(sce))
+write.csv(
+  metadata_df, file.path(out_dir, "barcode_metadata.csv"), row.names = FALSE, quote = FALSE
+)
 
 dev.off()
 

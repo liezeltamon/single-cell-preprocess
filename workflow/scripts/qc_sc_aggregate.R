@@ -24,6 +24,7 @@ calculate_mads <- function(x) {
 parser <- ArgumentParser(description = "Aggregate single-cell quality control results per sameple / sequencing run")
 parser$add_argument("--src_dir", type = "character", required = TRUE, help = "Path to directory containing single-cell qc results")
 parser$add_argument("--out_dir", type = "character", required = TRUE, help = "Output directory")
+parser$add_argument("--grouping_var", type = "character", required = TRUE, help = "Variable for grouping heatmap entries")
 #parser$add_argument("--heatmap_breaks", type = "double", nargs = 3, default = c(-3, 3, 0.5), help = "Three numeric values: min max step for seq() (default: -3 3 0.5)")
 parser$add_argument("--heatmap_breaks", type = "character", default = "-5,5,0.5", help = "Comma-separated numeric values: min max step for seq()")
 parser$add_argument("--heatmap_colors", type = "character", nargs = "+", default = c("blue", "white", "red"), help = "List of colors, e.g. blue white red")
@@ -52,9 +53,9 @@ qc_agg_df <- do.call("rbind", qc_agg_df_lst)
 write.csv(qc_agg_df, file.path(out_dir, "metrics.csv"), row.names = FALSE, quote = FALSE)
 
 # **(Optional) Exclude some columns from the heatmap**
-qc_agg_df = qc_agg_df[
-     , grepl(".median|barcode_count|seq_run_id|group_id", colnames(qc_agg_df))
-]
+#qc_agg_df = qc_agg_df[
+#     , grepl(".median|barcode_count|seq_run_id|group_id", colnames(qc_agg_df))
+#]
 
 heatmap_breaks <- seq(heatmap_breaks[1], heatmap_breaks[2], by = heatmap_breaks[3])
 heatmap_colors <- colorRampPalette(heatmap_colors)(length(heatmap_breaks))
@@ -79,9 +80,9 @@ assert_that(identical(dim(mads_mx), dim(data_mx)))
 
 # Plot
 
-split_key = "group_id"
+split_key <- grouping_var
 plot_num_rows <- max(table(qc_agg_df[[split_key]]))
-pdf(file.path(out_dir, "heatmaps.pdf"), width = (plot_num_rows * (5/6)), height = 8)
+pdf(file.path(out_dir, "heatmaps.pdf"), width = (plot_num_rows * (5/6)), height = 20)
 
 for (split_key_lvl in unique(qc_agg_df[[split_key]])) {
   

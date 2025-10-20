@@ -17,13 +17,20 @@ suppressPackageStartupMessages({
 
 parser <- ArgumentParser(description = "Single-cell quality control")
 parser$add_argument("--counts_dir", type = "character", required = TRUE, help = "Path to 10x count directory")
-parser$add_argument("--group_id_src_path", type = "character", required = TRUE, help = "Cell metadata CSV")
-parser$add_argument("--group_id_var", type = "character", default = "hashing_var", help = "Variable name for group ID in cell metadata (default: hashing_var)")
+parser$add_argument("--grouping_var_src_path", type = "character", required = TRUE, help = "Cell metadata CSV")
+parser$add_argument("--grouping_var", type = "character", default = "hashing_var", help = "Variable name for group ID in cell metadata (default: hashing_var)")
 parser$add_argument("--whitelist_path", type = "character", required = TRUE, help = "Path to barcode whitelist file")
 parser$add_argument("--out_dir", type = "character", required = TRUE, help = "Output directory")
 args <- parser$parse_args()
 for (i in seq_along(args)) {assign(names(args)[i], args[[i]])}
 out_dir <- create_dir(out_dir)
+
+# Functions
+
+collapse_unique <- function(x) {
+  unique_x <- unique(na.omit(x))
+  if (length(unique_x) == 0) NA_character_ else paste(unique_x, collapse = ";")
+}
 
 # ----- MAIN -----
 
@@ -38,13 +45,15 @@ sce <- SingleCellExperiment::splitAltExps(sce, rowData(sce)$Type)
 barcode_singlets <- readLines(whitelist_path)
 sce <- sce[, barcode_singlets]
 
-# Add hashing_var to cell metadata
-group_id_barcode_mapping <- read_csv(group_id_src_path) %>% 
-    select(c("Barcode", !!sym(group_id_var))) %>% 
-    tibble::deframe()
-colData(sce)[[group_id_var]] <- unname(group_id_barcode_mapping[colData(sce)$Barcode])
-#sce$seq_run_id <- seq_run_id
-sce$group_id <- sce[[group_id_var]]
+# Create cell metadata including column for grouping_var and other covariates
+barcode_metadata_df <- read_csv(grouping_var_src_path)
+rownames(barcode_metadata_df) <- barcode_metadata_df$Barcode
+
+# Match order of barcodes in sce
+barcode_metadata_df <- barcode_metadata_df[rownames(colData(sce)), , drop = FALSE]
+colData(sce) <- DataFrame(barcode_metadata_df)
+sce$grouping_var <- sce[[grouping_var]]
+assert_that(!any(duplicated(colnames(colData(sce)))))
 
 # Add qc metrics for all relevant experiments e.g. RNA + ADT
 
@@ -57,11 +66,16 @@ sce <- do_basicQC(
     use.altexps = TRUE
 )
 
+metadata_df <- as.data.frame(colData(sce))
+write.csv(
+    metadata_df, file.path(out_dir, "barcode_metadata.csv"), row.names = FALSE, quote = FALSE
+)
+
 pdf(file.path(out_dir, "plots.pdf"), height = 9, width = 50)
 
 plot_basicQC(
     colData(sce),
-    group = "group_id", 
+    group = "grouping_var", 
     metrics = names(which(unlist(lapply(colData(sce), function(x) is.numeric(x))))), 
     transform_log10 = TRUE
 )
@@ -70,18 +84,27 @@ dev.off()
 
 qc_per_group_df <- colData(sce) %>%
     as.data.frame() %>%
-    group_by(group_id) %>%
-    summarise(across(where(is.numeric),
-                        list(
-                            median = ~ median(.x, na.rm = FALSE),
-                            mean = ~ mean(.x, na.rm = TRUE),
-                            min = ~ min(.x, na.rm = TRUE),
-                            max = ~ max(.x, na.rm = TRUE),
-                            sd = ~ sd(.x, na.rm = TRUE)
-                        ),
-                        .names = "{.col}-{.fn}"),
-                barcode_count = n()) %>%
-    mutate(seq_run_id = unique(sce$Sample)) %>%
+    group_by(grouping_var) %>%
+    summarise(
+        across(
+            where(~ !is.numeric(.x)),
+            ~ collapse_unique(.x),
+            .names = "{.col}"
+        ),
+        across(
+            where(is.numeric),
+            list(
+                # na.rm = FALSE in of unexpected NAs
+                median = ~ median(.x, na.rm = FALSE),
+                mean = ~ mean(.x, na.rm = FALSE),
+                min = ~ min(.x, na.rm = FALSE),
+                max = ~ max(.x, na.rm = FALSE),
+                sd = ~ sd(.x, na.rm = FALSE)
+            ),
+            .names = "{.col}-{.fn}"
+        ),
+        barcode_count = n()
+    ) %>%
     as.data.frame()
 
 write.csv(qc_per_group_df, file.path(out_dir, "metrics.csv"))
