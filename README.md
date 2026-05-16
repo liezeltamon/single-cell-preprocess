@@ -2,7 +2,6 @@
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥8.0.0-brightgreen.svg)](https://snakemake.github.io)
 [![GitHub actions status](https://github.com/liezeltamon/single-cell-preprocess/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/liezeltamon/single-cell-preprocess/actions/workflows/main.yml)
-[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![workflow catalog](https://img.shields.io/badge/Snakemake%20workflow%20catalog-darkgreen)](https://snakemake.github.io/snakemake-workflow-catalog/docs/workflows/liezeltamon/single-cell-preprocess)
 
 A Snakemake workflow for preprocessing multiplexed 10X single-cell RNA-seq data: empty droplet removal, HTO-based sample demultiplexing, doublet detection, QC filtering, and quality metric reporting.
@@ -40,7 +39,7 @@ The workflow expects **Cell Ranger `multi` pipeline** outputs. Samples are auto-
 
 ## Output
 
-All outputs are written to `results/process_droplets_pipeline/config/`.
+All outputs are written to `results/process_droplets_pipeline/{CONFIG_FILENAME}/`, where `CONFIG_FILENAME` is set in `workflow/Snakefile` (default: `config`). Change this variable to namespace outputs from different config runs.
 
 | Directory | Key output files |
 | --- | --- |
@@ -102,7 +101,6 @@ sbatch -J process_droplets_pipeline -p short,long \
 - Liezel Tamon
   - University of Oxford
   - [ORCID profile](https://orcid.org/0000-0003-3705-6019)
-  - https://www.imm.ox.ac.uk/people/liezel-tamon
 
 ## References
 
@@ -110,7 +108,7 @@ sbatch -J process_droplets_pipeline -p short,long \
 
 > Lun, A. T. L., Riesenfeld, S., Andrews, T., Dao, T. P., Gomes, T., & Marioni, J. C. _EmptyDrops: distinguishing cells from empty droplets in droplet-based single-cell RNA sequencing data_. Genome Biology, 20:63, **2019**. https://doi.org/10.1186/s13059-019-1662-y
 
-> Bimber, B. N., & Cole, B. L. _CellHashR: an R package for cell hashing demultiplexing_. bioRxiv, **2021**. https://doi.org/10.1101/2021.09.03.458947
+> Bimber Lab. _cellhashR: A Package for Demultiplexing Cell Hashing Data_. R package version 1.2.1, **2026**. https://github.com/BimberLab/cellhashR
 
 > Germain, P.-L., Lun, A., Garcia Meixide, C., Macnair, W., & Robinson, M. D. _Doublet identification in single-cell sequencing data using scDblFinder_. F1000Research, 10:979, **2021**. https://doi.org/10.12688/f1000research.73600.2
 
